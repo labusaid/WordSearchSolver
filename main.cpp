@@ -45,10 +45,16 @@ bool readPuzzle(wordGame &game, string inputFileName) {
         return false;
     }
 
+    char tempChar;
     //Populate the char matrix.
     for (int r = 0; r < game.numberRows; r++) {
         for (int c = 0; c < game.numberColumns; c++) {
-            inputFile >> game.puzzle[r][c];
+            //Read from file.
+            inputFile >> tempChar;
+            //Convert char to uppercase.
+            tempChar = toupper(tempChar);
+            //Set char in matrix to read char.
+            game.puzzle[r][c] = tempChar;
         }
     }
 
@@ -240,6 +246,11 @@ int main() {
     //Get word from file and search for word.
     wordFind *wordFind1 = new wordFind;
     while (inputFile >> wordFind1->word) {
+        //Convert chars to uppercase.
+        for (char tempCharNum = 0; tempCharNum < wordFind1->word.length(); tempCharNum++) {
+            wordFind1->word.at(tempCharNum) = toupper(wordFind1->word.at(tempCharNum));
+        }
+
         //Reset wordFind1.
         wordFind1->found = false;
         wordFind1->foundCount = 0;

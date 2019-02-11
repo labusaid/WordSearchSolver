@@ -66,29 +66,6 @@ void displayPuzzle(wordGame &game) {
     }
 }
 
-//bool searchInDirection(int rDiff, int cDiff, wordGame &game, string word) {
-//    int r = 0;
-//    int c = 0;
-//
-//    //Ensure the entire word will fit.
-//    if (word.length() >= (c + game.numberColumns)) {
-//        return false;
-//    }
-//
-//    int charPos = 0;
-//    while (charPos < word.length()) {
-//        if (word.at(charPos) != game.puzzle[r][c]) {
-//            return false;
-//        }
-//        r += rDiff;
-//        c += cDiff;
-//        charPos++;
-//    }
-//    if (charPos == word.length()) {
-//        return true;
-//    }
-//}
-
 void findWord(wordGame &game, wordFind &theFind) {
     theFind.found = false;
     theFind.foundCount = 0;
@@ -100,13 +77,132 @@ void findWord(wordGame &game, wordFind &theFind) {
             //Searches left to right.
             for (int charPos = 0; charPos < theFind.word.length(); charPos++) {
                 //If characters do not match break for loop.
-                if (theFind.word.at(charPos) != game.puzzle[r][c + charPos]) {
+                if (theFind.word.at(charPos) != game.puzzle[r][c - charPos]) {
                     break;
                 }
                 //Mark as found is charPos reaches the end of the word.
                 if (charPos == (theFind.word.length() - 1)) {
                     theFind.found = true;
                     theFind.where = LEFT_RIGHT;
+                    theFind.row = r;
+                    theFind.column = c;
+                    theFind.foundCount++;
+                    break;
+                }
+            }
+
+            //Searches right to left.
+            for (int charPos = 0; charPos < theFind.word.length(); charPos++) {
+                //If characters do not match break for loop.
+                if (theFind.word.at(charPos) != game.puzzle[r][c + charPos]) {
+                    break;
+                }
+                //Mark as found is charPos reaches the end of the word.
+                if (charPos == (theFind.word.length() - 1)) {
+                    theFind.found = true;
+                    theFind.where = RIGHT_LEFT;
+                    theFind.row = r;
+                    theFind.column = c;
+                    theFind.foundCount++;
+                    break;
+                }
+            }
+
+            //Searches down.
+            for (int charPos = 0; charPos < theFind.word.length(); charPos++) {
+                //If characters do not match break for loop.
+                if (theFind.word.at(charPos) != game.puzzle[r + charPos][c]) {
+                    break;
+                }
+                //Mark as found is charPos reaches the end of the word.
+                if (charPos == (theFind.word.length() - 1)) {
+                    theFind.found = true;
+                    theFind.where = DOWN;
+                    theFind.row = r;
+                    theFind.column = c;
+                    theFind.foundCount++;
+                    break;
+                }
+            }
+
+            //Searches up.
+            for (int charPos = 0; charPos < theFind.word.length(); charPos++) {
+                //If characters do not match break for loop.
+                if (theFind.word.at(charPos) != game.puzzle[r - charPos][c]) {
+                    break;
+                }
+                //Mark as found is charPos reaches the end of the word.
+                if (charPos == (theFind.word.length() - 1)) {
+                    theFind.found = true;
+                    theFind.where = UP;
+                    theFind.row = r;
+                    theFind.column = c;
+                    theFind.foundCount++;
+                    break;
+                }
+            }
+
+            //Searches diagonal to bottom right.
+            for (int charPos = 0; charPos < theFind.word.length(); charPos++) {
+                //If characters do not match break for loop.
+                if (theFind.word.at(charPos) != game.puzzle[r + charPos][c + charPos]) {
+                    break;
+                }
+                //Mark as found is charPos reaches the end of the word.
+                if (charPos == (theFind.word.length() - 1)) {
+                    theFind.found = true;
+                    theFind.where = RIGHT_DOWN;
+                    theFind.row = r;
+                    theFind.column = c;
+                    theFind.foundCount++;
+                    break;
+                }
+            }
+
+            //Searches diagonal to top right.
+            for (int charPos = 0; charPos < theFind.word.length(); charPos++) {
+                //If characters do not match break for loop.
+                if (theFind.word.at(charPos) != game.puzzle[r - charPos][c + charPos]) {
+                    break;
+                }
+                //Mark as found is charPos reaches the end of the word.
+                if (charPos == (theFind.word.length() - 1)) {
+                    theFind.found = true;
+                    theFind.where = RIGHT_UP;
+                    theFind.row = r;
+                    theFind.column = c;
+                    theFind.foundCount++;
+                    break;
+                }
+            }
+
+            //Searches diagonal to bottom left.
+            for (int charPos = 0; charPos < theFind.word.length(); charPos++) {
+                //If characters do not match break for loop.
+                if (theFind.word.at(charPos) != game.puzzle[r + charPos][c - charPos]) {
+                    break;
+                }
+                //Mark as found is charPos reaches the end of the word.
+                if (charPos == (theFind.word.length() - 1)) {
+                    theFind.found = true;
+                    theFind.where = LEFT_DOWN;
+                    theFind.row = r;
+                    theFind.column = c;
+                    theFind.foundCount++;
+                    break;
+                }
+            }
+
+            //Searches diagonal to top left.
+            for (int charPos = 0; charPos < theFind.word.length(); charPos++) {
+                //If characters do not match break for loop.
+                if (theFind.word.at(charPos) != game.puzzle[r - charPos][c - charPos]) {
+                    break;
+                }
+                //Mark as found is charPos reaches the end of the word.
+                if (charPos == (theFind.word.length() - 1)) {
+                    theFind.found = true;
+                    theFind.where = LEFT_UP;
                     theFind.row = r;
                     theFind.column = c;
                     theFind.foundCount++;
@@ -138,8 +234,11 @@ int main() {
 
     //Get word from file and search for word.
     wordFind *wordFind1 = new wordFind;
-    wordFind1->found = false;
     while (inputFile >> wordFind1->word) {
+        //Reset wordFind1.
+        wordFind1->found = false;
+        wordFind1->foundCount = 0;
+
         findWord(*wordGame1,*wordFind1);
 
         //Output when a word is found.
@@ -147,15 +246,35 @@ int main() {
             //Output how many occurrences were found if it is greater than one.
             if (wordFind1->foundCount > 1) {
                 cout << "The word " << wordFind1->word << " was found "
-                << wordFind1->foundCount << " times" << endl;
+                     << wordFind1->foundCount << " times" << endl;
             }
-            //Output where word was found.
-            else{
-                cout << "The word " << wordFind1->word << " was found at (" << wordFind1->row << ", "
-                << wordFind1->column << ") - " << wordFind1->where << endl;
+                //Output where word was found.
+            else if (wordFind1->foundCount == 1){
+                cout << "The word " << wordFind1->word << " was found at (" << wordFind1->row+1 << ", "
+                     << wordFind1->column+1 << ") - " ;
+                switch (wordFind1->where) {
+                    case LEFT_RIGHT: cout << "left";
+                        break;
+                    case RIGHT_LEFT: cout << "right";
+                        break;
+                    case DOWN: cout << "down";
+                        break;
+                    case UP: cout << "up";
+                        break;
+                    case RIGHT_DOWN: cout << "right/down";
+                        break;
+                    case RIGHT_UP: cout << "right/up";
+                        break;
+                    case LEFT_DOWN: cout << "left/down";
+                        break;
+                    case LEFT_UP: cout << "left/up";
+                        break;
+                }
+                cout << endl;
             }
-
         }
+        //Output if word is not found.
+        else cout << "The word " << wordFind1->word << " was not found" << endl;
     }
 
     return 0;

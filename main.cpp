@@ -32,7 +32,7 @@ struct wordFind
 };
 
 bool readPuzzle(wordGame &game, string inputFileName) {
-    game.version = 2;
+    game.version = 1;
 
     //Open file and confirm that it opened correctly.
     inputFile.open(inputFileName);
@@ -77,7 +77,7 @@ void findWord(wordGame &game, wordFind &theFind) {
             //Searches left to right.
             for (int charPos = 0; charPos < theFind.word.length(); charPos++) {
                 //If characters do not match break for loop.
-                if (theFind.word.at(charPos) != game.puzzle[r][c - charPos]) {
+                if (theFind.word.at(charPos) != game.puzzle[r][c + charPos]) {
                     break;
                 }
                 //Mark as found is charPos reaches the end of the word.
@@ -94,30 +94,13 @@ void findWord(wordGame &game, wordFind &theFind) {
             //Searches right to left.
             for (int charPos = 0; charPos < theFind.word.length(); charPos++) {
                 //If characters do not match break for loop.
-                if (theFind.word.at(charPos) != game.puzzle[r][c + charPos]) {
+                if (theFind.word.at(charPos) != game.puzzle[r][c - charPos]) {
                     break;
                 }
                 //Mark as found is charPos reaches the end of the word.
                 if (charPos == (theFind.word.length() - 1)) {
                     theFind.found = true;
                     theFind.where = RIGHT_LEFT;
-                    theFind.row = r;
-                    theFind.column = c;
-                    theFind.foundCount++;
-                    break;
-                }
-            }
-
-            //Searches down.
-            for (int charPos = 0; charPos < theFind.word.length(); charPos++) {
-                //If characters do not match break for loop.
-                if (theFind.word.at(charPos) != game.puzzle[r + charPos][c]) {
-                    break;
-                }
-                //Mark as found is charPos reaches the end of the word.
-                if (charPos == (theFind.word.length() - 1)) {
-                    theFind.found = true;
-                    theFind.where = DOWN;
                     theFind.row = r;
                     theFind.column = c;
                     theFind.foundCount++;
@@ -142,16 +125,16 @@ void findWord(wordGame &game, wordFind &theFind) {
                 }
             }
 
-            //Searches diagonal to bottom right.
+            //Searches down.
             for (int charPos = 0; charPos < theFind.word.length(); charPos++) {
                 //If characters do not match break for loop.
-                if (theFind.word.at(charPos) != game.puzzle[r + charPos][c + charPos]) {
+                if (theFind.word.at(charPos) != game.puzzle[r + charPos][c]) {
                     break;
                 }
                 //Mark as found is charPos reaches the end of the word.
                 if (charPos == (theFind.word.length() - 1)) {
                     theFind.found = true;
-                    theFind.where = RIGHT_DOWN;
+                    theFind.where = DOWN;
                     theFind.row = r;
                     theFind.column = c;
                     theFind.foundCount++;
@@ -176,16 +159,16 @@ void findWord(wordGame &game, wordFind &theFind) {
                 }
             }
 
-            //Searches diagonal to bottom left.
+            //Searches diagonal to bottom right.
             for (int charPos = 0; charPos < theFind.word.length(); charPos++) {
                 //If characters do not match break for loop.
-                if (theFind.word.at(charPos) != game.puzzle[r + charPos][c - charPos]) {
+                if (theFind.word.at(charPos) != game.puzzle[r + charPos][c + charPos]) {
                     break;
                 }
                 //Mark as found is charPos reaches the end of the word.
                 if (charPos == (theFind.word.length() - 1)) {
                     theFind.found = true;
-                    theFind.where = LEFT_DOWN;
+                    theFind.where = RIGHT_DOWN;
                     theFind.row = r;
                     theFind.column = c;
                     theFind.foundCount++;
@@ -210,6 +193,23 @@ void findWord(wordGame &game, wordFind &theFind) {
                 }
             }
 
+            //Searches diagonal to bottom left.
+            for (int charPos = 0; charPos < theFind.word.length(); charPos++) {
+                //If characters do not match break for loop.
+                if (theFind.word.at(charPos) != game.puzzle[r + charPos][c - charPos]) {
+                    break;
+                }
+                //Mark as found is charPos reaches the end of the word.
+                if (charPos == (theFind.word.length() - 1)) {
+                    theFind.found = true;
+                    theFind.where = LEFT_DOWN;
+                    theFind.row = r;
+                    theFind.column = c;
+                    theFind.foundCount++;
+                    break;
+                }
+            }
+
         }
     }
 }
@@ -218,19 +218,25 @@ int main() {
     wordGame *wordGame1 = new wordGame;
     cin >> puzzleFileName;
 
-    //Error and exit if file was not opened.
+    //Error and exit if puzzle file was not opened.
     if (!readPuzzle(*wordGame1,puzzleFileName)) {
-        cerr << "File could not be opened." << endl;
+        cerr << "The puzzle file \"" << puzzleFileName << "\" could not be opened or is invalid" << endl;
         return 1;
     }
 
     //Display puzzle if successfully read.
-    cout << "Puzzle was read." << endl;
+    cout << "The puzzle from file \"" << puzzleFileName  << "\"" << endl;
     displayPuzzle(*wordGame1);
 
     //Read in second file name and open second file.
     cin >> wordListFileName;
     inputFile.open(wordListFileName);
+
+    //Error and exit if words file was not opened.
+    if (!inputFile) {
+        cerr << "The puzzle file \"" << wordListFileName << "\" could not be opened or is invalid" << endl;
+        return 1;
+    }
 
     //Get word from file and search for word.
     wordFind *wordFind1 = new wordFind;
@@ -253,9 +259,9 @@ int main() {
                 cout << "The word " << wordFind1->word << " was found at (" << wordFind1->row+1 << ", "
                      << wordFind1->column+1 << ") - " ;
                 switch (wordFind1->where) {
-                    case LEFT_RIGHT: cout << "left";
+                    case LEFT_RIGHT: cout << "right";
                         break;
-                    case RIGHT_LEFT: cout << "right";
+                    case RIGHT_LEFT: cout << "left";
                         break;
                     case DOWN: cout << "down";
                         break;

@@ -32,7 +32,7 @@ struct wordFind
 };
 
 bool readPuzzle(wordGame &game, string inputFileName) {
-    game.version = 1;
+    game.version = 2;
 
     //Open file and confirm that it opened correctly.
     inputFile.open(inputFileName);
@@ -73,11 +73,10 @@ void findWord(wordGame &game, wordFind &theFind) {
     //Search char matrix for string.
     for (int r = 0; r < game.numberRows; r++) {
         for (int c = 0; c < game.numberColumns; c++) {
-
             //Searches left to right.
             for (int charPos = 0; charPos < theFind.word.length(); charPos++) {
                 //If characters do not match break for loop.
-                if (theFind.word.at(charPos) != game.puzzle[r][c + charPos]) {
+                if (theFind.word.at(charPos) != game.puzzle[r][c + charPos] || c+charPos > game.numberColumns) {
                     break;
                 }
                 //Mark as found is charPos reaches the end of the word.
@@ -94,7 +93,7 @@ void findWord(wordGame &game, wordFind &theFind) {
             //Searches right to left.
             for (int charPos = 0; charPos < theFind.word.length(); charPos++) {
                 //If characters do not match break for loop.
-                if (theFind.word.at(charPos) != game.puzzle[r][c - charPos]) {
+                if (theFind.word.at(charPos) != game.puzzle[r][c - charPos] || c-charPos < 0) {
                     break;
                 }
                 //Mark as found is charPos reaches the end of the word.
@@ -111,7 +110,7 @@ void findWord(wordGame &game, wordFind &theFind) {
             //Searches up.
             for (int charPos = 0; charPos < theFind.word.length(); charPos++) {
                 //If characters do not match break for loop.
-                if (theFind.word.at(charPos) != game.puzzle[r - charPos][c]) {
+                if (theFind.word.at(charPos) != game.puzzle[r - charPos][c] || r-charPos < 0) {
                     break;
                 }
                 //Mark as found is charPos reaches the end of the word.
@@ -128,7 +127,7 @@ void findWord(wordGame &game, wordFind &theFind) {
             //Searches down.
             for (int charPos = 0; charPos < theFind.word.length(); charPos++) {
                 //If characters do not match break for loop.
-                if (theFind.word.at(charPos) != game.puzzle[r + charPos][c]) {
+                if (theFind.word.at(charPos) != game.puzzle[r + charPos][c] || r+charPos > game.numberRows) {
                     break;
                 }
                 //Mark as found is charPos reaches the end of the word.
@@ -145,7 +144,7 @@ void findWord(wordGame &game, wordFind &theFind) {
             //Searches diagonal to top right.
             for (int charPos = 0; charPos < theFind.word.length(); charPos++) {
                 //If characters do not match break for loop.
-                if (theFind.word.at(charPos) != game.puzzle[r - charPos][c + charPos]) {
+                if (theFind.word.at(charPos) != game.puzzle[r - charPos][c + charPos] || r-charPos < 0 || c+charPos > game.numberColumns) {
                     break;
                 }
                 //Mark as found is charPos reaches the end of the word.
@@ -162,7 +161,7 @@ void findWord(wordGame &game, wordFind &theFind) {
             //Searches diagonal to bottom right.
             for (int charPos = 0; charPos < theFind.word.length(); charPos++) {
                 //If characters do not match break for loop.
-                if (theFind.word.at(charPos) != game.puzzle[r + charPos][c + charPos]) {
+                if (theFind.word.at(charPos) != game.puzzle[r + charPos][c + charPos] || r+charPos > game.numberRows || c+charPos > game.numberColumns) {
                     break;
                 }
                 //Mark as found is charPos reaches the end of the word.
@@ -179,7 +178,7 @@ void findWord(wordGame &game, wordFind &theFind) {
             //Searches diagonal to top left.
             for (int charPos = 0; charPos < theFind.word.length(); charPos++) {
                 //If characters do not match break for loop.
-                if (theFind.word.at(charPos) != game.puzzle[r - charPos][c - charPos]) {
+                if (theFind.word.at(charPos) != game.puzzle[r - charPos][c - charPos] || r-charPos < 0 || c-charPos < 0) {
                     break;
                 }
                 //Mark as found is charPos reaches the end of the word.
@@ -196,7 +195,7 @@ void findWord(wordGame &game, wordFind &theFind) {
             //Searches diagonal to bottom left.
             for (int charPos = 0; charPos < theFind.word.length(); charPos++) {
                 //If characters do not match break for loop.
-                if (theFind.word.at(charPos) != game.puzzle[r + charPos][c - charPos]) {
+                if (theFind.word.at(charPos) != game.puzzle[r + charPos][c - charPos] || r+charPos > game.numberRows || c-charPos < 0) {
                     break;
                 }
                 //Mark as found is charPos reaches the end of the word.
